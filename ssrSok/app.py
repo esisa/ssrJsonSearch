@@ -9,7 +9,7 @@ app = Flask(__name__)
 
 @app.route('/ssr')
 def ssrSok():
-    query = request.args.get('q', '')
+    query = request.args.get('query', '')
     r = requests.get('https://ws.geonorge.no/SKWS3Index/ssr/sok?navn='+query+'*&antPerSide=9&epsgKode=4258&eksakteForst=true', verify=False)
     doc = xmltodict.parse(r.text)
     js = json.dumps(doc)
