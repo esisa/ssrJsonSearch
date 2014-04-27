@@ -29,16 +29,28 @@ def ssrSok():
     # Add zoom values
     if addZoomValues: 
 	    i = 0 # counter
-	    for x in doc["sokRes"]["stedsnavn"]: # every stedsnavn
-	    	stedsnavn = dict(x) # convert to regular dict
+	    try:
+	    	# Check to see if we only get one result
+	    	ssrId = doc["sokRes"]["stedsnavn"]["ssrId"]
+	    	stedsnavn = dict(doc["sokRes"]["stedsnavn"]) # convert to regular dict
 	    	try:
 	    		# Check if this navnetype exist in zoomValues
 	    		stedsnavn["zoom"] = zoomValues[stedsnavn["navnetype"]]
 	    	except KeyError:
 	    		# If not set to default zoom level 15
 	    		stedsnavn["zoom"] = 15
-	    	doc["sokRes"]["stedsnavn"][i] = stedsnavn
-	    	i += 1
+	    	doc["sokRes"]["stedsnavn"] = stedsnavn
+	    except TypeError:
+		    for x in doc["sokRes"]["stedsnavn"]: # every stedsnavn
+		    	stedsnavn = dict(x) # convert to regular dict
+		    	try:
+		    		# Check if this navnetype exist in zoomValues
+		    		stedsnavn["zoom"] = zoomValues[stedsnavn["navnetype"]]
+		    	except KeyError:
+		    		# If not set to default zoom level 15
+		    		stedsnavn["zoom"] = 15
+		    	doc["sokRes"]["stedsnavn"][i] = stedsnavn
+		    	i += 1
  
     js = json.dumps(doc)
 
