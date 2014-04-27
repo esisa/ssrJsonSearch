@@ -1,17 +1,45 @@
+# -*- coding: utf-8 -*-
+
 from flask import Flask
 from flask import request, Response
 
 import xmltodict
 import requests
 import json
+from collections import OrderedDict
 
 app = Flask(__name__)
+
+# Add zoomvalues to the JSON result
+addZoomValues = True
+
+# Dictionary holding navnetype and zoomlevel
+zoomValues = {u"By": 12, u"Kommune": 11, u"Fjellområde": 10, u"Verneområder": 10, u"Innsjø": 14}
+
+@app.route('/')
+def home():
+	return "ssrJsonSearch"
 
 @app.route('/ssr')
 def ssrSok():
     query = request.args.get('query', '')
     r = requests.get('https://ws.geonorge.no/SKWS3Index/ssr/sok?navn='+query+'*&antPerSide=9&epsgKode=4258&eksakteForst=true', verify=False)
     doc = xmltodict.parse(r.text)
+
+    # Add zoom values
+    if addZoomValues: 
+	    i = 0 # counter
+	    for x in doc["sokRes"]["stedsnavn"]: # every stedsnavn
+	    	stedsnavn = dict(x) # convert to regular dict
+	    	try:
+	    		# Check if this navnetype exist in zoomValues
+	    		stedsnavn["zoom"] = zoomValues[stedsnavn["navnetype"]]
+	    	except KeyError:
+	    		# If not set to default zoom level 15
+	    		stedsnavn["zoom"] = 15
+	    	doc["sokRes"]["stedsnavn"][i] = stedsnavn
+	    	i += 1
+ 
     js = json.dumps(doc)
 
     resp = Response(js, status=200, mimetype='application/json')
