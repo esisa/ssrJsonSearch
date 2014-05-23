@@ -23,7 +23,31 @@ def home():
 @app.route('/ssr')
 def ssrSok():
     query = request.args.get('query', '')
-    r = requests.get('https://ws.geonorge.no/SKWS3Index/ssr/sok?navn='+query+'*&antPerSide=9&epsgKode=4258&eksakteForst=true', verify=False)
+    nordLL = request.args.get('nordLL')
+    ostLL = request.args.get('ostLL')
+    nordUR = request.args.get('nordUR')
+    ostUR = request.args.get('ostUR')
+
+    bbox = False
+
+    print nordLL
+
+    if nordLL is not None:
+    	if ostLL is not None:
+    		if nordUR is not None:
+    			if ostUR is not None:
+    				bbox = True
+
+    if bbox:	
+    	r = requests.get("""https://ws.geonorge.no/SKWS3Index/ssr/sok?
+    						navn=""" + query + """
+    						nordLL=""" + nordLL + """
+    						nordLL=""" + ostLL + """
+    						nordLL=""" + nordUR + """
+    						nordLL=""" + ostUR + """
+    						*&antPerSide=9&epsgKode=4258&eksakteForst=true""", verify=False)
+    else:
+    	r = requests.get('https://ws.geonorge.no/SKWS3Index/ssr/sok?navn='+query+'*&antPerSide=9&epsgKode=4258&eksakteForst=true', verify=False)
     doc = xmltodict.parse(r.text)
 
     # Add zoom values
