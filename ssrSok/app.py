@@ -29,9 +29,6 @@ def ssrSok():
     ostUR = request.args.get('ostUR')
 
     bbox = False
-
-    print nordLL
-
     if nordLL is not None:
     	if ostLL is not None:
     		if nordUR is not None:
@@ -39,13 +36,20 @@ def ssrSok():
     				bbox = True
 
     if bbox:	
+    	print """https://ws.geonorge.no/SKWS3Index/ssr/sok?
+    						navn=""" + query + """*
+    						&nordLL=""" + nordLL + """
+    						&ostLL=""" + ostLL + """
+    						&nordUR=""" + nordUR + """
+    						&ostUR=""" + ostUR + """
+    						&antPerSide=9&epsgKode=4258&eksakteForst=true"""
     	r = requests.get("""https://ws.geonorge.no/SKWS3Index/ssr/sok?
-    						navn=""" + query + """
-    						nordLL=""" + nordLL + """
-    						nordLL=""" + ostLL + """
-    						nordLL=""" + nordUR + """
-    						nordLL=""" + ostUR + """
-    						*&antPerSide=9&epsgKode=4258&eksakteForst=true""", verify=False)
+    						navn=""" + query + """*
+    						&nordLL=""" + nordLL + """
+    						&ostLL=""" + ostLL + """
+    						&nordUR=""" + nordUR + """
+    						&ostUR=""" + ostUR + """
+    						&antPerSide=9&epsgKode=4258&eksakteForst=true""", verify=False)
     else:
     	r = requests.get('https://ws.geonorge.no/SKWS3Index/ssr/sok?navn='+query+'*&antPerSide=9&epsgKode=4258&eksakteForst=true', verify=False)
     doc = xmltodict.parse(r.text)
