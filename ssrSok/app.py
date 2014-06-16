@@ -67,7 +67,7 @@ def ssrSok():
 	    	except KeyError:
 	    		# If not set to default zoom level 15
 	    		stedsnavn["zoom"] = 15
-	    	doc["sokRes"]["stedsnavn"] = [stedsnavn]
+	    	doc["sokRes"]["stedsnavn"] = [stedsnavn] # Always return array
 	    except TypeError:
 		    for x in doc["sokRes"]["stedsnavn"]: # every stedsnavn
 		    	stedsnavn = dict(x) # convert to regular dict
