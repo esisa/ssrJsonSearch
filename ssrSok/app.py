@@ -8,6 +8,11 @@ import requests
 import json
 from collections import OrderedDict
 
+# Make sure input strings are intepreated as unicode
+import sys
+reload(sys)
+sys.setdefaultencoding("utf-8")
+
 app = Flask(__name__)
 
 # Add zoomvalues to the JSON result
